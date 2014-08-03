@@ -40,16 +40,18 @@ bot.onMessage('yomama', function(req, res, next) {
 });
 
 bot.onMessage('urban', function(req, res, next) {
+    var term = req.tokenized.args.join(' ');
+
     request(
         {
-            uri: 'http://api.urbandictionary.com/v0/define?' + querystring.stringify({ term: req.args }),
+            uri: 'http://api.urbandictionary.com/v0/define?' + querystring.stringify({ term: term }),
             json: true
         },
         function(err, incomingMessage, response) {
             if (err) return next(err);
 
             if (response['result_type'] == 'exact') {
-                res.send(req.args + ": " + response['list'][0]['definition']);
+                res.send(term + ": " + response['list'][0]['definition']);
             } else {
                 res.send('No results found.');
             }
