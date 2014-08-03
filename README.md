@@ -91,11 +91,11 @@ With this middleware activated, you can say `ignore <nick>` and `unignore <nick>
 ### router
 __Requires `Talos.tokenize()`__
 
-Exposes the `Talos.prototype.onMessage([trigger], handler)` function.
+Exposes the `Talos.prototype.onMessage([trigger,] handler)` function.
 
 When an incoming message's first word token matches any of the defined triggers, each matching trigger's associated handler is called.
 
-To define a catch-all handler, simply omit the `trigger` argument when calling `onMessage()`.
+To define a catch-all handler, simply omit the `trigger` argument when calling `onMessage()`. Note that calling `onMessage(handler)`, with no `trigger`, is equivalent to calling `use(handler)`.
 ```javascript
 bot.use(Talos.tokenize());
 ...
