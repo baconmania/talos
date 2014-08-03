@@ -6,22 +6,20 @@ var Talos = require('./../index'),
     }),
     request = require('request'),
     cheerio = require('cheerio'),
-    querystring = require('querystring'),
-    async = require('async');
-
+    querystring = require('querystring');
 
 bot.use(Talos.listenFor(/^!baconbot/));
 bot.use(Talos.tokenize());
 bot.use(Talos.bannedUsers());
 bot.use(Talos.router());
 
-bot.onMessage('echo', function(req, res, next) {
-    res.send(req.tokenized.args.join(' '));
+bot.use(function logger(req, res, next) {
+    console.log(require('util').inspect(arguments, { depth: null }));
     next();
 });
 
-bot.onMessage(function logger(req, res, next) {
-    console.log(require('util').inspect(arguments, { depth: null }));
+bot.onMessage('echo', function(req, res, next) {
+    res.send(req.tokenized.args.join(' '));
     next();
 });
 
@@ -60,36 +58,15 @@ bot.onMessage('urban', function(req, res, next) {
 });
 
 bot.onMessage('btc', function(req, res, next) {
-    async.series([
-        function(done) {
-            request({ uri: 'http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast', json: true},
-                function(err, incomingMessage, response) {
-                    if (err)
-                        return next(err);
+    request({ uri: 'https://coinbase.com//api/v1/currencies/exchange_rates', json: true},
+        function(err, incomingMessage, response) {
+            if (err)
+                return next(err);
 
-                    if (response['result'] != "success")
-                        return next(response);
-
-                    res.send(
-                        'MtGox: 1 BTC = ' + Number(response['data']['last']['value']).toFixed(2) + ' USD'
-                    );
-                    done();
-                }
-            );
-
-        },
-        function(done) {
-            request({ uri: 'https://coinbase.com//api/v1/currencies/exchange_rates', json: true},
-                function(err, incomingMessage, response) {
-                    if (err)
-                        return next(err);
-
-                    res.send('Coinbase: 1 BTC = ' + response['btc_to_usd'] + ' USD');
-                    done();
-                }
-            )
+            res.send('Coinbase: 1 BTC = ' + response['btc_to_usd'] + ' USD');
+            next();
         }
-    ], next);
+    );
 });
 
 bot.connect();
