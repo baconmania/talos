@@ -13,7 +13,6 @@ var Talos = require('talos'),
 
 bot.use(Talos.listenFor(/^!baconbot/));
 bot.use(Talos.tokenize());
-bot.use(Talos.bannedUsers());
 bot.use(Talos.router());
 
 bot.onMessage('echo', function(req, res, next) {
@@ -22,6 +21,11 @@ bot.onMessage('echo', function(req, res, next) {
 });
 
 bot.connect();
+```
+
+```
+baconmania: !baconbot echo this and that
+baconbot: this and that
 ```
 
 ## Writing middleware
@@ -46,6 +50,7 @@ You can call `next(err)` to skip the remaining middleware in the pipeline. Talos
 Talos comes with a minimal set of middleware which implements functionality that most IRC bots will need.
 ### listenFor
 Ignores all messages which don't match the given trigger RegEx.
+
 When a message comes in and matches the given trigger, the trigger is removed from the incoming message text before control is passed to the next request handler.
 ```javascript
 bot.use(Talos.listenFor(/^!baconbot/));
@@ -80,8 +85,11 @@ bot.use(Talos.bannedUsers(['baconmania', 'otherbannednick']));
 With this middleware activated, you can say `ignore <nick>` and `unignore <nick>` in IRC to ban and unban users, respectively.
 ### router
 __Requires `Talos.tokenize()`__
+
 Exposes the `Talos.prototype.onMessage([trigger], handler)` function.
+
 When an incoming message's first word token matches any of the defined triggers, each matching trigger's associated handler is called.
+
 To define a catch-all handler, simply omit the `trigger` argument when calling `onMessage()`.
 ```javascript
 bot.use(Talos.tokenize());
