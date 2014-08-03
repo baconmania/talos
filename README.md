@@ -28,6 +28,11 @@ baconmania: !baconbot echo this and that
 baconbot: this and that
 ```
 
+## Installation
+```shell
+$ npm install talos
+```
+
 ## Writing middleware
 Each piece of middleware you write should take three arguments: `req`, `res`, and `next`.
 ### req
