@@ -40,6 +40,8 @@ var req = {
 The `res` object exposes a single function, `send(message)`. Call this function to send the string `message` back to the channel or nick which sent a message to your bot.
 ### next
 Every piece of middleware you write __must__ call `next()` to pass control to the next piece of middleware in the pipeline.
+
+You can call `next(err)` to skip the remaining middleware in the pipeline. Talos will print the given error to stderr.
 ## Bundled middleware
 Talos comes with a minimal set of middleware which implements functionality that most IRC bots will need.
 ### listenFor
