@@ -7,9 +7,7 @@ var Talos = require('./../index'),
     request = require('request'),
     cheerio = require('cheerio'),
     querystring = require('querystring'),
-    bannedUsers = {
-        //baconmania: 1
-    };
+    async = require('async');
 
 
 bot.use(Talos.listenFor(/^!baconbot/));
@@ -61,5 +59,37 @@ bot.onMessage('urban', function(req, res, next) {
     );
 });
 
+bot.onMessage('btc', function(req, res, next) {
+    async.series([
+        function(done) {
+            request({ uri: 'http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast', json: true},
+                function(err, incomingMessage, response) {
+                    if (err)
+                        return next(err);
+
+                    if (response['result'] != "success")
+                        return next(response);
+
+                    res.send(
+                        'MtGox: 1 BTC = ' + Number(response['data']['last']['value']).toFixed(2) + ' USD'
+                    );
+                    done();
+                }
+            );
+
+        },
+        function(done) {
+            request({ uri: 'https://coinbase.com//api/v1/currencies/exchange_rates', json: true},
+                function(err, incomingMessage, response) {
+                    if (err)
+                        return next(err);
+
+                    res.send('Coinbase: 1 BTC = ' + response['btc_to_usd'] + ' USD');
+                    done();
+                }
+            )
+        }
+    ], next);
+});
 
 bot.connect();
