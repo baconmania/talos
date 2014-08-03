@@ -17,9 +17,15 @@ bot.use(Talos.tokenize());
 bot.use(Talos.bannedUsers());
 bot.use(Talos.router());
 
+bot.onMessage('echo', function(req, res, next) {
+    res.send(req.tokenized.args.join(' '));
     next();
 });
 
+bot.onMessage(function logger(req, res, next) {
+    console.log(require('util').inspect(arguments, { depth: null }));
+    next();
+});
 
 bot.onMessage('yomama', function(req, res, next) {
     request({ uri: 'http://api.yomomma.info/', headers: { 'Accept': 'application/json' }, json: true }, function(err, incomingMessage, response) {
