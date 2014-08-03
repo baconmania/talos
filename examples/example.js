@@ -1,5 +1,5 @@
-var Bot = require('./../index'),
-    bot = new Bot({
+var Talos = require('./../index'),
+    bot = new Talos({
         host: 'irc.freenode.net',
         nick: 'baconbot',
         channels: ['#baconmania']
@@ -12,10 +12,10 @@ var Bot = require('./../index'),
     };
 
 
-bot.onMessage(function(req, res, next) {
-    if (req.fromUser in bannedUsers) {
-        return next('Ignoring message from banned user.');
-    }
+bot.use(Talos.listenFor(/^!baconbot/));
+bot.use(Talos.tokenize());
+bot.use(Talos.bannedUsers());
+bot.use(Talos.router());
 
     next();
 });
